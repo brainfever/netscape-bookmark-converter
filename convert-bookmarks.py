@@ -16,11 +16,10 @@ args = parser.parse_args()
 for filename in args.filenames:
     soup = BeautifulSoup(open(filename, encoding='utf8'), "html5lib")
     for link in soup.find_all('a'):
-        bookmark = {}
+        bookmark = {'url': link.get('href')}
         # url and title
-        bookmark['url'] = link.get('href')
-        bookmark['title'] = link.string.strip() if link.string\
-                                                else bookmark['url']
+        bookmark['title'] = link.string.strip() if link.string \
+            else bookmark['url']
         # tags
         tags = link.get('tags')
         bookmark['tags'] = tags.split(',') if tags else []
@@ -30,5 +29,5 @@ for filename in args.filenames:
         sibling = link.parent.next_sibling
         bookmark['comment'] = \
             sibling.string.strip() if sibling and sibling.name == 'dd' \
-        else ''
+            else ''
         print(json.dumps(bookmark, sort_keys=False, indent=4))
